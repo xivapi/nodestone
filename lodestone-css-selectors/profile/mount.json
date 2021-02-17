@@ -1,0 +1,11 @@
+{
+    "LIST": {
+        "selector": ".mount__list"
+    },
+    "NAME": {
+        "selector": ".mount__name"
+    },
+    "TOTAL": {
+        "selector": ".mount__sort__total > span:nth-child(1)"
+    }
+}

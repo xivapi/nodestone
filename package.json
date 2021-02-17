@@ -1,0 +1,15 @@
+{
+  "name": "lodestone-parser-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "search": "node index.js",
+    "test": "node index.js test",
+    "test:bare": "node index.js baretest"
+  },
+  "dependencies": {
+    "axios": "^0.21.0",
+    "jsdom": "^16.4.0"
+  }
+}

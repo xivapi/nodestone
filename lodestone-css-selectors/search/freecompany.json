@@ -1,0 +1,64 @@
+{
+    "ENTRIES_CONTAINER": {
+        "selector": ".ldst__window"
+    },
+    "ENTRY": {
+        "ROOT": {
+            "selector": "div.entry"
+        },
+        "CREST_LAYERS": {
+            "BOTTOM": {
+                "selector": ".entry__freecompany__crest__image > img:nth-child(1)",
+                "attribute": "src"
+            },
+            "MIDDLE": {
+                "selector": ".entry__freecompany__crest__image > img:nth-child(2)",
+                "attribute": "src"
+            },
+            "TOP": {
+                "selector": ".entry__freecompany__crest__image > img:nth-child(3)",
+                "attribute": "src"
+            }
+        },
+        "ID": {
+            "selector": ".entry__block",
+            "attribute": "href",
+            "regex": "/lodestone/freecompany/(?P<ID>\\d*)/"
+        },
+        "NAME": {
+            "selector": ".entry__name"
+        },
+        "SERVER": {
+            "selector": ".entry__world"
+        },
+        "ACTIVE": {
+            "selector": ".entry__freecompany__fc-active:nth-of-type(1)",
+            "regex": "Active:[\\s\\x{00A0}](?P<State>\\w*)"
+        },
+        "ACTIVE_MEMBERS": {
+            "selector": ".entry__freecompany__fc-member"
+        },
+        "RECRUITMENT_OPEN": {
+            "selector": ".entry__freecompany__fc-active:nth-of-type(2)",
+            "regex": "Recruitment:[\\s\\x{00A0}](?P<State>\\w*)"
+        },
+        "ESTATE_BUILT": {
+            "selector": ".entry__freecompany__fc-housing"
+        },
+        "FORMED": {
+            "selector": ".entry__freecompany__fc-day > script",
+            "regex": ".*ldst_strftime\\((?P<Timestamp>\\d*)"
+        }
+    },
+    "PAGE_INFO": {
+        "selector": "ul.btn__pager:nth-child(6) > li:nth-child(3)",
+        "regex": "Page (?P<CurrentPage>[0-9*]) of (?P<NumPages>[0-9*])"
+    },
+    "LIST_NEXT_BUTTON": {
+        "selector": "ul.btn__pager:nth-child(6) > li:nth-child(4) > a:nth-child(1)",
+        "attribute": "href"
+    },
+    "NO_RESULTS_FOUND": {
+        "selector": ".parts__zero"
+    }
+}

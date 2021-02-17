@@ -1,0 +1,38 @@
+{
+    "ENTRIES_CONTAINER": {
+        "selector": ".pvpteam__member"
+    },
+    "ENTRY": {
+        "ROOT": {
+            "selector": "div.entry"
+        },
+        "AVATAR": {
+            "selector": ".entry__chara__face img",
+            "attribute": "src"
+        },
+        "ID": {
+            "selector": ".entry__bg",
+            "attribute": "href",
+            "regex": "/lodestone/character/(?P<ID>\\d*)/"
+        },
+        "NAME": {
+            "selector": ".entry__name"
+        },
+        "MATCHES": {
+            "selector": ".entry__freecompany__info > li:last-of-type > span"
+        },
+        "RANK": {
+            "selector": ".entry__freecompany__info > .js__tooltip",
+            "attribute": "data-tooltip",
+            "regex": "/ (?P<RankName>.+)"
+        },
+        "RANK_ICON": {
+            "selector": ".entry__freecompany__info > .js__tooltip > img",
+            "attribute": "src"
+        },
+        "SERVER": {
+            "selector": ".entry__world",
+            "regex": "(?P<World>\\w*)[\\s\\x{00A0}]\\((?P<DC>\\w*)\\)"
+        }
+    }
+}

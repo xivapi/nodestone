@@ -1,0 +1,34 @@
+{
+    "version": "0.31.3",
+    "userAgentDesktop": "curl/7.73.0",
+    "userAgentMobile": "Mozilla/5.0 (iPhone; CPU OS 10_15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/14E304 Safari/605.1.15",
+    "applicableUris": {
+        "freecompany/focus.json": "https://na.finalfantasyxiv.com/lodestone/freecompany/%s/",
+        "freecompany/freecompany.json": "https://na.finalfantasyxiv.com/lodestone/freecompany/%s/",
+        "freecompany/members.json": "https://na.finalfantasyxiv.com/lodestone/freecompany/%s/member/",
+        "freecompany/reputation.json": "https://na.finalfantasyxiv.com/lodestone/freecompany/%s/",
+        "freecompany/seeking.json": "https://na.finalfantasyxiv.com/lodestone/freecompany/%s/",
+
+        "linkshell/crossworld/cwls.json": "https://na.finalfantasyxiv.com/lodestone/crossworld_linkshell/%s/",
+        "linkshell/crossworld/members.json": "https://na.finalfantasyxiv.com/lodestone/crossworld_linkshell/%s/",
+        "linkshell/ls.json": "https://na.finalfantasyxiv.com/lodestone/linkshell/%s/",
+        "linkshell/members.json": "https://na.finalfantasyxiv.com/lodestone/linkshell/%s/",
+
+        "profile/achievements.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/achievement/",
+        "profile/attributes.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/",
+        "profile/character.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/",
+        "profile/classjob.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/class_job/",
+        "profile/gearset.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/",
+        "profile/minion.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/",
+        "profile/mount.json": "https://na.finalfantasyxiv.com/lodestone/character/%d/",
+
+        "pvpteam/members.json": "https://na.finalfantasyxiv.com/lodestone/pvpteam/%s/",
+        "pvpteam/pvpteam.json": "https://na.finalfantasyxiv.com/lodestone/pvpteam/%s/",
+
+        "search/character.json": "https://na.finalfantasyxiv.com/lodestone/character/",
+        "search/cwls.json": "https://na.finalfantasyxiv.com/lodestone/crossworld_linkshell/",
+        "search/freecompany.json": "https://na.finalfantasyxiv.com/lodestone/freecompany/",
+        "search/linkshell.json": "https://na.finalfantasyxiv.com/lodestone/linkshell/",
+        "search/pvpteam.json": "https://na.finalfantasyxiv.com/lodestone/pvpteam/"
+    }
+}
