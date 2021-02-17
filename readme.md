@@ -1,1 +1,3 @@
-# lodestone-parser-js
+# nodestone
+
+WIP Node Lodestone Parser
