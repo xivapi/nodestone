@@ -1,8 +1,8 @@
 const { JSDOM } = require("jsdom");
 const axios = require("axios");
 
-const profile = require("../../lodestone-css-selectors/profile/character.json");
-const attributes = require("../../lodestone-css-selectors/profile/attributes.json")
+const profile = require("../../lib/lodestone-css-selectors/profile/character.json");
+const attributes = require("../../lib/lodestone-css-selectors/profile/attributes.json")
 
 const getCharacter = async (lodestoneid) => {
   const { data } = await axios.get("https://na.finalfantasyxiv.com/lodestone/character/" + lodestoneid);
