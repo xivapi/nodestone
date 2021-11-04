@@ -1,3 +1,6 @@
 [submodule "lib/lodestone-data-exports"]
 	path = lib/lodestone-css-selectors
 	url = https://github.com/xivapi/lodestone-css-selectors
+[submodule "lib/lodestone-css-selectors"]
+	path = lib/lodestone-css-selectors
+	url = https://github.com/xivapi/lodestone-css-selectors
