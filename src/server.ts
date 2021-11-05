@@ -9,13 +9,13 @@ const characterParser = new Character();
 const achievementsParser = new Achievements();
 
 app.get('/Character/:characterId', async (req, res) => {
-    const character = await characterParser.parse(req);
+    const character = await characterParser.parse(req, 'Character.');
     const parsed: any = {
         Character: character
     }
     const additionalData = Array.isArray(req.query.data) ? req.query.data : [req.query.data].filter(d => !!d);
     if (additionalData.includes('AC')) {
-        parsed.Achievements = await achievementsParser.parse(req);
+        parsed.Achievements = await achievementsParser.parse(req, 'Achievements.');
     }
     return res.status(200).send(parsed);
 });

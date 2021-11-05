@@ -14,7 +14,7 @@ export abstract class PageParser {
 
     protected abstract getCSSSelectors(): CssSelectorRegistry;
 
-    public async parse(req: Request): Promise<Object> {
+    public async parse(req: Request, columnsPrefix = ''): Promise<Object> {
         const {data} = await axios.get(this.getURL(req));
         const dom = new JSDOM(data);
         let {document} = dom.window;
@@ -22,9 +22,17 @@ export abstract class PageParser {
         const selectors = this.getCSSSelectors();
         let columns: string[];
         if (columnsQuery && !Array.isArray(columnsQuery)) {
-            columns = [columnsQuery.toString()];
+            columns = [columnsQuery.toString()]
+                .filter(column => {
+                    return column.startsWith(columnsPrefix)
+                })
+                .map(column => column.replace(columnsPrefix, ''));
         } else if (columnsQuery && Array.isArray(columnsQuery)) {
-            columns = columnsQuery.map(c => c.toString());
+            columns = columnsQuery.map(c => c.toString())
+                .filter(column => {
+                    return column.startsWith(columnsPrefix)
+                })
+                .map(column => column.replace(columnsPrefix, ''));
         } else {
             columns = Object.keys(selectors).map(key => {
                 return this.definitionNameToColumnName(key);

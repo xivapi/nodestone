@@ -4,9 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "search": "node index.js",
-    "test": "node index.js test",
-    "test:bare": "node index.js baretest",
     "express:start": "tsc -p tsconfig.json && node build/server.js"
   },
   "dependencies": {
