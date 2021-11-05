@@ -9,9 +9,19 @@ const characterParser = new Character();
 const achievementsParser = new Achievements();
 
 app.get('/Character/:characterId', async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    if ((req.query['columns'] as string)?.indexOf('Bio') > -1) {
+        res.set('Cache-Control', 'max-age=3600');
+    }
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
     const character = await characterParser.parse(req, 'Character.');
     const parsed: any = {
-        Character: character
+        Character: {
+            ID: +req.params.characterId,
+            ...character
+        }
     }
     const additionalData = Array.isArray(req.query.data) ? req.query.data : [req.query.data].filter(d => !!d);
     if (additionalData.includes('AC')) {
