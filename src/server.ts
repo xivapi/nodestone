@@ -9,15 +9,37 @@ const characterParser = new Character();
 const achievementsParser = new Achievements();
 
 app.get('/Character/:characterId', async (req, res) => {
-    const character = await characterParser.parse(req, 'Character.');
-    const parsed: any = {
-        Character: character
+    res.set('Access-Control-Allow-Origin', '*');
+    if ((req.query['columns'] as string)?.indexOf('Bio') > -1) {
+        res.set('Cache-Control', 'max-age=3600');
     }
-    const additionalData = Array.isArray(req.query.data) ? req.query.data : [req.query.data].filter(d => !!d);
-    if (additionalData.includes('AC')) {
-        parsed.Achievements = await achievementsParser.parse(req, 'Achievements.');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
     }
-    return res.status(200).send(parsed);
+    try {
+        const character = await characterParser.parse(req, 'Character.');
+        const parsed: any = {
+            Character: {
+                ID: +req.params.characterId,
+                ...character
+            }
+        }
+        const additionalData = Array.isArray(req.query.data) ? req.query.data : [req.query.data].filter(d => !!d);
+        if (additionalData.includes('AC')) {
+            parsed.Achievements = await achievementsParser.parse(req, 'Achievements.');
+        }
+        return res.status(200).send(parsed);
+    } catch (err: any) {
+        if (err.message === '404') {
+            return res.sendStatus(404)
+        }
+        return res.status(500).send(err);
+    }
+
 });
 
-app.listen(3000, () => console.log('Server started. Press Ctrl+C to quit'));
+const port = process.env.PORT || 8080;
+const server = app.listen(port, () => {
+    console.log(`Listening at http://localhost:${port}`);
+});
+server.on('error', console.error);

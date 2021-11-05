@@ -15,7 +15,9 @@ export abstract class PageParser {
     protected abstract getCSSSelectors(): CssSelectorRegistry;
 
     public async parse(req: Request, columnsPrefix = ''): Promise<Object> {
-        const {data} = await axios.get(this.getURL(req));
+        const {data} = await axios.get(this.getURL(req)).catch((err: any) => {
+            throw new Error(err.response.status);
+        });
         const dom = new JSDOM(data);
         let {document} = dom.window;
         const columnsQuery = req.query['columns'];
