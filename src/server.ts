@@ -2,7 +2,6 @@ import express from 'express';
 import {Character} from "./profile/character";
 import {Achievements} from "./profile/achievements";
 
-
 const app = express();
 
 const characterParser = new Character();
