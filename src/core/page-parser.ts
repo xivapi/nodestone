@@ -7,6 +7,7 @@ import axios from 'axios';
 import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registry";
 
 export type Language = 'en' | 'de' | 'ja' | 'fr';
+export type RequestFunction = (url: string, headers?: Record<string, string>) => Promise<string>;
 
 const lodestoneBaseUrls: Record<Language, string> = {
     'en': 'https://na.finalfantasyxiv.com/lodestone',
@@ -18,6 +19,7 @@ const lodestoneBaseUrls: Record<Language, string> = {
 export abstract class PageParser {
 
     private _language: Language;
+    protected requestFunction: RequestFunction;
     protected baseUrl: string;
 
     public get language() {
@@ -29,20 +31,34 @@ export abstract class PageParser {
         this.baseUrl = lodestoneBaseUrls[this._language];
     }
 
-    public constructor(language: Language = 'en') {
+    public constructor(language: Language = 'en', requestFunction?: RequestFunction) {
         this._language = Object.keys(lodestoneBaseUrls).includes(language) ? language : 'en';
         this.baseUrl = lodestoneBaseUrls[this._language];
+
+        if (typeof requestFunction === 'function') {
+            this.requestFunction = requestFunction;
+        } else {
+            const axiosInstance = axios.create();
+            this.requestFunction = (url, headers) => {
+                return axiosInstance.get(url, {headers})
+                    .then(response => response.data);
+            };
+        }
     }
 
-    protected abstract getURL(characterId: string): string;
+    protected abstract getLodestonePage(characterId: string): Promise<string>;
 
     protected abstract getCSSSelectors(): CssSelectorRegistry;
 
-    public async parse(characterId: string, columns: string[] = []): Promise<Object> {
-        const {data} = await axios.get(this.getURL(characterId)).catch((err: any) => {
-            throw new Error(err.response.status);
+    public async get(characterId: string, columns: string[] = []): Promise<Record<string, unknown>> {
+        const lodestonePage = await this.getLodestonePage(characterId).catch(error => {
+            if (axios.isAxiosError(error) && error.response?.status) {
+                throw new Error(String(error.response.status));
+            }
+            throw error;
         });
-        const dom = new JSDOM(data);
+
+        const dom = new JSDOM(lodestonePage);
         const selectors = this.getCSSSelectors();
         const columnsToParse = columns.length > 0 ? columns : Object.keys(selectors).map(this.definitionNameToColumnName).filter(column => column !== 'default');
         

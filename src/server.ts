@@ -34,8 +34,8 @@ app.get('/Character/:characterId', async (req, res) => {
         const additionalData = getEntriesFromQuery(req.query.data);
 
         const [character, achievements] = await Promise.all([
-            characterParser.parse(characterId, getColumnsForParser(stringColumns, 'Character.')),
-            additionalData.includes('AC') ? achievementsParser.parse(characterId, getColumnsForParser(stringColumns, 'Achievements.')) : Promise.resolve(),
+            characterParser.get(characterId, getColumnsForParser(stringColumns, 'Character.')),
+            additionalData.includes('AC') ? achievementsParser.get(characterId, getColumnsForParser(stringColumns, 'Achievements.')) : Promise.resolve(),
         ] as Promise<(Record<string, unknown> | undefined)>[]);
 
         const result: Record<string, unknown> = {};

@@ -3,11 +3,11 @@ import * as character from '../lib/lodestone-css-selectors/profile/character.jso
 import {CssSelectorRegistry} from "../core/css-selector-registry";
 
 export class Character extends PageParser {
-    protected getURL(characterId: string): string {
-        return this.baseUrl + '/character/' + encodeURIComponent(characterId);
-    }
-
     protected getCSSSelectors(): CssSelectorRegistry {
         return character;
+    }
+
+    protected getLodestonePage(characterId: string): Promise<string> {
+        return this.requestFunction(this.baseUrl + '/character/' + encodeURIComponent(characterId));
     }
 }

@@ -7,7 +7,7 @@ export class Achievements extends PageParser {
         return achievements;
     }
 
-    protected getURL(characterId: string): string {
-        return this.baseUrl + '/character/' + encodeURIComponent(characterId) + '/achievement';
+    protected getLodestonePage(characterId: string): Promise<string> {
+        return this.requestFunction(this.baseUrl + '/character/' + encodeURIComponent(characterId) + '/achievement');
     }
 }
