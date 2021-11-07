@@ -50,6 +50,10 @@ export abstract class PageParser {
 
     protected abstract getCSSSelectors(): CssSelectorRegistry;
 
+    protected modifyParseResult(data: Record<string, unknown>): Record<string, unknown> {
+        return data;
+    }
+
     public async get(characterId: string, columns: string[] = []): Promise<Record<string, unknown>> {
         const lodestonePage = await this.getLodestonePage(characterId).catch(error => {
             if (axios.isAxiosError(error) && error.response?.status) {
@@ -63,29 +67,30 @@ export abstract class PageParser {
         const columnsToParse = columns.length > 0 ? columns : Object.keys(selectors).map(this.definitionNameToColumnName).filter(column => column !== 'default');
         
         let {document} = dom.window;
+        let data: Record<string, unknown> = {};
 
-        return columnsToParse.reduce((acc, column) => {
+        for (const column of columnsToParse) {
             const definition = this.getDefinition(selectors, column);
+            
             if (column === 'Root') {
                 const context = this.handleColumn(definition, document)?.data;
                 const contextDOM = new JSDOM(context);
                 document = contextDOM.window.document;
-                return {
-                    ...acc
+            } else {
+                const parsed = this.handleColumn(definition, document);
+                
+                if (parsed.isPatch || column === 'Entry') {
+                    data = {
+                        ...data,
+                        ...(parsed.data || {}),
+                    };
+                } else {
+                    data[column] = parsed.data;
                 }
             }
-            const parsed = this.handleColumn(definition, document);
-            if (parsed.isPatch || column === 'Entry') {
-                return {
-                    ...acc,
-                    ...(parsed.data || {})
-                }
-            }
-            return {
-                ...acc,
-                [column]: parsed.data
-            }
-        }, {});
+        }
+
+        return this.modifyParseResult(data);
     }
 
     private handleColumn(definition: CssSelectorRegistry | CssSelectorDefinition | null, document: Document): { isPatch: boolean, data: any } {
