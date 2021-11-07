@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 import {Character} from "./profile/character";
 import {Achievements} from "./profile/achievements";
 
