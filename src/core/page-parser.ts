@@ -10,37 +10,21 @@ const axios = require('axios').default;
 
 export abstract class PageParser {
 
-    protected abstract getURL(req: Request): string;
+    protected abstract getURL(characterId: string): string;
 
     protected abstract getCSSSelectors(): CssSelectorRegistry;
 
-    public async parse(req: Request, columnsPrefix = ''): Promise<Object> {
-        const {data} = await axios.get(this.getURL(req)).catch((err: any) => {
+    public async parse(characterId: string, columns: string[] = []): Promise<Object> {
+        const {data} = await axios.get(this.getURL(characterId)).catch((err: any) => {
             throw new Error(err.response.status);
         });
         const dom = new JSDOM(data);
         let {document} = dom.window;
         const columnsQuery = req.query['columns'];
         const selectors = this.getCSSSelectors();
-        let columns: string[];
-        if (columnsQuery && !Array.isArray(columnsQuery)) {
-            columns = [columnsQuery.toString()]
-                .filter(column => {
-                    return column.startsWith(columnsPrefix)
-                })
-                .map(column => column.replace(columnsPrefix, ''));
-        } else if (columnsQuery && Array.isArray(columnsQuery)) {
-            columns = columnsQuery.map(c => c.toString())
-                .filter(column => {
-                    return column.startsWith(columnsPrefix)
-                })
-                .map(column => column.replace(columnsPrefix, ''));
-        } else {
-            columns = Object.keys(selectors).map(key => {
-                return this.definitionNameToColumnName(key);
-            }).filter(column => column !== 'default');
-        }
-        return columns.reduce((acc, column) => {
+        const columnsToParse = columns.length > 0 ? columns : Object.keys(selectors).map(this.definitionNameToColumnName).filter(column => column !== 'default');
+        
+        return columnsToParse.reduce((acc, column) => {
             const definition = this.getDefinition(selectors, column);
             if (column === 'Root') {
                 const context = this.handleColumn(definition, document)?.data;

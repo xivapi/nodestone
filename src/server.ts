@@ -7,6 +7,19 @@ const app = express();
 const characterParser = new Character();
 const achievementsParser = new Achievements();
 
+function getEntriesFromQuery(query: unknown | unknown[]): string[] {
+    const entries = Array.isArray(query) ? query as unknown[] : [query];
+    return (entries.filter(entry => typeof entry === 'string') as string[])
+        .map(entry => entry.split(','))
+        .flat();
+}
+
+function getColumnsForParser(columns: string | string[], columnsPrefix: string = ''): string[] {
+    const columnsArray = Array.isArray(columns) ? columns : [columns];
+
+    return columnsArray.filter(column => column.startsWith(columnsPrefix)).map(column => column.replace(columnsPrefix, ''));
+}
+
 app.get('/Character/:characterId', async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     if ((req.query['columns'] as string)?.indexOf('Bio') > -1) {
@@ -16,25 +29,29 @@ app.get('/Character/:characterId', async (req, res) => {
         return res.sendStatus(200);
     }
     try {
-        const character = await characterParser.parse(req, 'Character.');
-        const parsed: any = {
-            Character: {
-                ID: +req.params.characterId,
-                ...character
-            }
-        }
-        const additionalData = Array.isArray(req.query.data) ? req.query.data : [req.query.data].filter(d => !!d);
-        if (additionalData.includes('AC')) {
-            parsed.Achievements = await achievementsParser.parse(req, 'Achievements.');
-        }
-        return res.status(200).send(parsed);
-    } catch (err: any) {
-        if (err.message === '404') {
+        const characterId = req.params.characterId;
+        const stringColumns = getEntriesFromQuery(req.query.columns);
+        const additionalData = getEntriesFromQuery(req.query.data);
+
+        const [character, achievements] = await Promise.all([
+            characterParser.parse(characterId, getColumnsForParser(stringColumns, 'Character.')),
+            additionalData.includes('AC') ? achievementsParser.parse(characterId, getColumnsForParser(stringColumns, 'Achievements.')) : Promise.resolve(),
+        ] as Promise<(Record<string, unknown> | undefined)>[]);
+
+        const result: Record<string, unknown> = {};
+        if (character != null) result.Character = {
+            ID: Number.isNaN(Number.parseInt(characterId, 10)) ? characterId : Number.parseInt(characterId, 10),
+            ...character,
+        };
+        if (achievements != null) result.Achievements = achievements
+
+        return res.status(200).send(result);
+    } catch (error) {
+        if (error instanceof Error && error.message === '404') {
             return res.sendStatus(404)
         }
-        return res.status(500).send(err);
+        return res.status(500).send(error);
     }
-
 });
 
 const port = process.env.PORT || 8080;

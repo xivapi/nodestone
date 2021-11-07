@@ -8,8 +8,8 @@ export class Achievements extends PageParser {
         return achievements;
     }
 
-    protected getURL(req: Request): string {
-        return "https://na.finalfantasyxiv.com/lodestone/character/" + req.params.characterId + "/achievement";
+    protected getURL(characterId: string): string {
+        return "https://na.finalfantasyxiv.com/lodestone/character/" + characterId + "/achievement";
     }
 
 }
