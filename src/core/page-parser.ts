@@ -1,14 +1,38 @@
-import {JSDOM} from "jsdom";
-import {Request} from "express";
-import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registry";
+import {JSDOM} from 'jsdom';
+import {snakeCase} from 'lodash';
 // @ts-ignore
 import * as RegexTranslator from 'regex-translator';
+import axios from 'axios';
 
-import {snakeCase} from 'lodash';
+import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registry";
 
-const axios = require('axios').default;
+export type Language = 'en' | 'de' | 'ja' | 'fr';
+
+const lodestoneBaseUrls: Record<Language, string> = {
+    'en': 'https://na.finalfantasyxiv.com/lodestone',
+    'de': 'https://de.finalfantasyxiv.com/lodestone',
+    'ja': 'https://jp.finalfantasyxiv.com/lodestone',
+    'fr': 'https://fr.finalfantasyxiv.com/lodestone',
+};
 
 export abstract class PageParser {
+
+    private _language: Language;
+    protected baseUrl: string;
+
+    public get language() {
+        return this._language;
+    }
+
+    public set language(newLanguage: Language) {
+        this._language = Object.keys(lodestoneBaseUrls).includes(newLanguage) ? newLanguage : 'en';
+        this.baseUrl = lodestoneBaseUrls[this._language];
+    }
+
+    public constructor(language: Language = 'en') {
+        this._language = Object.keys(lodestoneBaseUrls).includes(language) ? language : 'en';
+        this.baseUrl = lodestoneBaseUrls[this._language];
+    }
 
     protected abstract getURL(characterId: string): string;
 
@@ -19,11 +43,11 @@ export abstract class PageParser {
             throw new Error(err.response.status);
         });
         const dom = new JSDOM(data);
-        let {document} = dom.window;
-        const columnsQuery = req.query['columns'];
         const selectors = this.getCSSSelectors();
         const columnsToParse = columns.length > 0 ? columns : Object.keys(selectors).map(this.definitionNameToColumnName).filter(column => column !== 'default');
         
+        let {document} = dom.window;
+
         return columnsToParse.reduce((acc, column) => {
             const definition = this.getDefinition(selectors, column);
             if (column === 'Root') {
