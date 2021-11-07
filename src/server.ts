@@ -1,11 +1,14 @@
 import * as express from 'express';
 import {Character} from "./profile/character";
 import {Achievements} from "./profile/achievements";
+import {Minions} from './profile/minions';
+import {Mounts} from './profile/mounts';
 
 const app = express();
-
 const characterParser = new Character();
 const achievementsParser = new Achievements();
+const minionsParser = new Minions();
+const mountsParser = new Mounts();
 
 function getEntriesFromQuery(query: unknown | unknown[]): string[] {
     const entries = Array.isArray(query) ? query as unknown[] : [query];
@@ -33,9 +36,11 @@ app.get('/Character/:characterId', async (req, res) => {
         const stringColumns = getEntriesFromQuery(req.query.columns);
         const additionalData = getEntriesFromQuery(req.query.data);
 
-        const [character, achievements] = await Promise.all([
+        const [character, achievements, minions, mounts] = await Promise.all([
             characterParser.get(characterId, getColumnsForParser(stringColumns, 'Character.')),
             additionalData.includes('AC') ? achievementsParser.get(characterId, getColumnsForParser(stringColumns, 'Achievements.')) : Promise.resolve(),
+            additionalData.includes('MIMO') ? minionsParser.get(characterId, getColumnsForParser(stringColumns, 'Minions.')) : Promise.resolve(),
+            additionalData.includes('MIMO') ? mountsParser.get(characterId, getColumnsForParser(stringColumns, 'Mounts.')) : Promise.resolve(),
         ] as Promise<(Record<string, unknown> | undefined)>[]);
 
         const result: Record<string, unknown> = {};
@@ -44,6 +49,8 @@ app.get('/Character/:characterId', async (req, res) => {
             ...character,
         };
         if (achievements != null) result.Achievements = achievements
+        if (minions != null) result.Minions = minions;
+        if (mounts != null) result.Mounts = mounts;
 
         return res.status(200).send(result);
     } catch (error) {
