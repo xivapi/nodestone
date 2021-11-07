@@ -1,67 +1,96 @@
-import {JSDOM} from "jsdom";
-import {Request} from "express";
-import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registry";
+import {JSDOM} from 'jsdom';
+import {snakeCase} from 'lodash';
 // @ts-ignore
 import * as RegexTranslator from 'regex-translator';
+import axios from 'axios';
 
-import {snakeCase} from 'lodash';
+import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registry";
 
-const axios = require('axios').default;
+export type Language = 'en' | 'de' | 'ja' | 'fr';
+export type RequestFunction = (url: string, headers?: Record<string, string>) => Promise<string>;
+
+const lodestoneBaseUrls: Record<Language, string> = {
+    'en': 'https://na.finalfantasyxiv.com/lodestone',
+    'de': 'https://de.finalfantasyxiv.com/lodestone',
+    'ja': 'https://jp.finalfantasyxiv.com/lodestone',
+    'fr': 'https://fr.finalfantasyxiv.com/lodestone',
+};
 
 export abstract class PageParser {
 
-    protected abstract getURL(req: Request): string;
+    private _language: Language;
+    protected requestFunction: RequestFunction;
+    protected baseUrl: string;
+
+    public get language() {
+        return this._language;
+    }
+
+    public set language(newLanguage: Language) {
+        this._language = Object.keys(lodestoneBaseUrls).includes(newLanguage) ? newLanguage : 'en';
+        this.baseUrl = lodestoneBaseUrls[this._language];
+    }
+
+    public constructor(language: Language = 'en', requestFunction?: RequestFunction) {
+        this._language = Object.keys(lodestoneBaseUrls).includes(language) ? language : 'en';
+        this.baseUrl = lodestoneBaseUrls[this._language];
+
+        if (typeof requestFunction === 'function') {
+            this.requestFunction = requestFunction;
+        } else {
+            const axiosInstance = axios.create();
+            this.requestFunction = (url, headers) => {
+                return axiosInstance.get(url, {headers})
+                    .then(response => response.data);
+            };
+        }
+    }
+
+    protected abstract getLodestonePage(characterId: string): Promise<string>;
 
     protected abstract getCSSSelectors(): CssSelectorRegistry;
 
-    public async parse(req: Request, columnsPrefix = ''): Promise<Object> {
-        const {data} = await axios.get(this.getURL(req)).catch((err: any) => {
-            throw new Error(err.response.status);
+    protected modifyParseResult(data: Record<string, unknown>): Record<string, unknown> {
+        return data;
+    }
+
+    public async get(characterId: string, columns: string[] = []): Promise<Record<string, unknown>> {
+        const lodestonePage = await this.getLodestonePage(characterId).catch(error => {
+            if (axios.isAxiosError(error) && error.response?.status) {
+                throw new Error(String(error.response.status));
+            }
+            throw error;
         });
-        const dom = new JSDOM(data);
-        let {document} = dom.window;
-        const columnsQuery = req.query['columns'];
+
+        const dom = new JSDOM(lodestonePage);
         const selectors = this.getCSSSelectors();
-        let columns: string[];
-        if (columnsQuery && !Array.isArray(columnsQuery)) {
-            columns = [columnsQuery.toString()]
-                .filter(column => {
-                    return column.startsWith(columnsPrefix)
-                })
-                .map(column => column.replace(columnsPrefix, ''));
-        } else if (columnsQuery && Array.isArray(columnsQuery)) {
-            columns = columnsQuery.map(c => c.toString())
-                .filter(column => {
-                    return column.startsWith(columnsPrefix)
-                })
-                .map(column => column.replace(columnsPrefix, ''));
-        } else {
-            columns = Object.keys(selectors).map(key => {
-                return this.definitionNameToColumnName(key);
-            }).filter(column => column !== 'default');
-        }
-        return columns.reduce((acc, column) => {
+        const columnsToParse = columns.length > 0 ? columns : Object.keys(selectors).map(this.definitionNameToColumnName).filter(column => column !== 'default');
+        
+        let {document} = dom.window;
+        let data: Record<string, unknown> = {};
+
+        for (const column of columnsToParse) {
             const definition = this.getDefinition(selectors, column);
+            
             if (column === 'Root') {
                 const context = this.handleColumn(definition, document)?.data;
                 const contextDOM = new JSDOM(context);
                 document = contextDOM.window.document;
-                return {
-                    ...acc
+            } else {
+                const parsed = this.handleColumn(definition, document);
+                
+                if (parsed.isPatch || column === 'Entry') {
+                    data = {
+                        ...data,
+                        ...(parsed.data || {}),
+                    };
+                } else {
+                    data[column] = parsed.data;
                 }
             }
-            const parsed = this.handleColumn(definition, document);
-            if (parsed.isPatch || column === 'Entry') {
-                return {
-                    ...acc,
-                    ...(parsed.data || {})
-                }
-            }
-            return {
-                ...acc,
-                [column]: parsed.data
-            }
-        }, {});
+        }
+
+        return this.modifyParseResult(data);
     }
 
     private handleColumn(definition: CssSelectorRegistry | CssSelectorDefinition | null, document: Document): { isPatch: boolean, data: any } {
