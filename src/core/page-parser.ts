@@ -20,7 +20,7 @@ export abstract class PageParser {
         });
         const dom = new JSDOM(data);
         let {document} = dom.window;
-        const columnsQuery = req.query['columns'];
+        const columnsQuery = req.query && req.query['columns'];
         const selectors = this.getCSSSelectors();
         let columns: string[];
         if (columnsQuery && !Array.isArray(columnsQuery)) {
