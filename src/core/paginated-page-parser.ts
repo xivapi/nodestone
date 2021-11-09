@@ -20,7 +20,7 @@ export abstract class PaginatedPageParser extends PageParser {
             Page: +baseParse.CurrentPage,
             PageTotal: +baseParse.NumPages,
             PageNext: +baseParse.CurrentPage < +baseParse.NumPages ? +baseParse.CurrentPage + 1 : null,
-            PagePrev: +baseParse.CurrentPage < 1 ? 0 : +baseParse.CurrentPage - 1
+            PagePrev: +baseParse.CurrentPage < 1 ? null : +baseParse.CurrentPage - 1
         };
         delete baseParse.CurrentPage;
         delete baseParse.NumPages;
