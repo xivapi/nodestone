@@ -118,7 +118,7 @@ export abstract class PageParser {
         return null;
     }
 
-    private handleElement(element: Element, definition: CssSelectorDefinition): string | Record<string, string> | null {
+    private handleElement(element: Element, definition: CssSelectorDefinition): string | number | Record<string, string | number> | null {
         if (!element) {
             return null;
         }
@@ -135,11 +135,14 @@ export abstract class PageParser {
                 .replace(/\\f\\n\\r\\t\\v/gm, '\\s\\f\\n\\r\\t\\v&nbsp;');
             const match = new RegExp(regex).exec(res);
             if (match) {
-                return match.groups || null;
+                return Object.entries<any>(match.groups as Record<string, any>).reduce((acc, [key, value]) => ({
+                    ...acc,
+                    [key]: isNaN(value) ? value : +value
+                }), {}) || null;
             }
             return null;
         }
-        return res || null;
+        return (isNaN(+res) ? res : +res) || null;
     }
 
     private isDefinition(definition: CssSelectorDefinition | CssSelectorRegistry): definition is CssSelectorDefinition {

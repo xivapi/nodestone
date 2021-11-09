@@ -1,13 +1,11 @@
 import express from 'express';
 import {Character} from "./profile/character";
 import {Achievements} from "./profile/achievements";
-import {Attributes} from "./profile/attributes";
 
 const app = express();
 
 const characterParser = new Character();
 const achievementsParser = new Achievements();
-const attributesParser = new Attributes();
 
 app.get('/Character/:characterId', async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
@@ -25,7 +23,6 @@ app.get('/Character/:characterId', async (req, res) => {
                 ...character
             }
         };
-        parsed.Attributes = attributesParser.parse(req, 'Attributes.');
         const additionalData = Array.isArray(req.query.data) ? req.query.data : [req.query.data].filter(d => !!d);
         if (additionalData.includes('AC')) {
             parsed.Achievements = await achievementsParser.parse(req, 'Achievements.');
