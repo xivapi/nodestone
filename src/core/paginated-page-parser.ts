@@ -15,7 +15,15 @@ export abstract class PaginatedPageParser extends PageParser {
 
     async parse(req: Request, columnsPrefix: string = ''): Promise<Object> {
         const baseParse: any = await super.parse(req, columnsPrefix);
-        delete baseParse['ListNextButton'];
+        delete baseParse.ListNextButton;
+        baseParse.Pagination = {
+            Page: +baseParse.CurrentPage,
+            PageTotal: +baseParse.NumPages,
+            PageNext: +baseParse.CurrentPage < +baseParse.NumPages ? +baseParse.CurrentPage + 1 : null,
+            PagePrev: +baseParse.CurrentPage < 1 ? 0 : +baseParse.CurrentPage - 1
+        };
+        delete baseParse.CurrentPage;
+        delete baseParse.NumPages;
         return baseParse;
     }
 }

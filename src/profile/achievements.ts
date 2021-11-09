@@ -12,4 +12,12 @@ export class Achievements extends PaginatedPageParser {
         return "https://na.finalfantasyxiv.com/lodestone/character/" + req.params.characterId + "/achievement";
     }
 
+    async parse(req: Request, columnsPrefix: string = ''): Promise<Object> {
+        const fromSuper: any = await super.parse(req, columnsPrefix);
+        fromSuper.Pagination.ResultsTotal = +fromSuper.TotalAchievements;
+        fromSuper.Pagination.ResultsPerPage = Math.ceil(+fromSuper.TotalAchievements / fromSuper.Pagination.PageTotal);
+        delete fromSuper.TotalAchievements;
+        return fromSuper;
+    }
+
 }
