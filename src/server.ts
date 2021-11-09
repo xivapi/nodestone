@@ -1,11 +1,27 @@
 import express from 'express';
 import {Character} from "./profile/character";
 import {Achievements} from "./profile/achievements";
+import {CharacterSearch} from "./search/character-search";
 
 const app = express();
 
 const characterParser = new Character();
 const achievementsParser = new Achievements();
+const characterSearch = new CharacterSearch();
+
+
+app.get('/Character/Search', async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    try {
+        const parsed = await characterSearch.parse(req);
+        return res.status(200).send(parsed);
+    } catch (err: any) {
+        return res.status(500).send(err);
+    }
+});
 
 app.get('/Character/:characterId', async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
@@ -34,7 +50,6 @@ app.get('/Character/:characterId', async (req, res) => {
         }
         return res.status(500).send(err);
     }
-
 });
 
 const port = process.env.PORT || 8080;
