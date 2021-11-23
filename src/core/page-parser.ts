@@ -24,7 +24,8 @@ export abstract class PageParser {
         const selectors = this.getCSSSelectors();
         let columns: string[];
         if (columnsQuery && !Array.isArray(columnsQuery)) {
-            columns = [columnsQuery.toString()]
+            columns = columnsQuery.toString()
+                .split(',')
                 .filter(column => {
                     return column.startsWith(columnsPrefix)
                 })
