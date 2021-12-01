@@ -20,7 +20,6 @@
     ]
   },
   "include": [
-    "src",
-    "types/js-stub.ts"
+    "src"
   ]
 }
