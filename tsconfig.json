@@ -12,6 +12,7 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "declarationDir": "dist/types",
     "outDir": "dist/lib",
     "typeRoots": [
@@ -19,6 +20,7 @@
     ]
   },
   "include": [
-    "src"
+    "src",
+    "types/js-stub.ts"
   ]
 }

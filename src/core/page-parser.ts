@@ -1,9 +1,8 @@
-import {JSDOM} from "jsdom";
 import {Request} from "express";
 import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registry";
 // @ts-ignore
 import * as RegexTranslator from 'regex-translator';
-
+import {parseHTML} from 'linkedom';
 import {snakeCase} from 'lodash';
 
 const axios = require('axios').default;
@@ -18,7 +17,7 @@ export abstract class PageParser {
         const {data} = await axios.get(this.getURL(req)).catch((err: any) => {
             throw new Error(err.response.status);
         });
-        const dom = new JSDOM(data);
+        const dom = parseHTML(data);
         let {document} = dom.window;
         const columnsQuery = req.query && req.query['columns'];
         const selectors = this.getCSSSelectors();
@@ -45,7 +44,7 @@ export abstract class PageParser {
             const definition = this.getDefinition(selectors, column);
             if (column === 'Root') {
                 const context = this.handleColumn(definition, document)?.data;
-                const contextDOM = new JSDOM(context);
+                const contextDOM = parseHTML(context);
                 document = contextDOM.window.document;
                 return {
                     ...acc
@@ -165,7 +164,7 @@ export abstract class PageParser {
         }
         return {
             List: mainList.map((element: string) => {
-                const miniDOM = new JSDOM(element);
+                const miniDOM = parseHTML(element);
                 const miniDocument = miniDOM.window.document;
                 return this.handleColumn(definitions, miniDocument)?.data;
             }).filter((row: any | null) => !!row)
