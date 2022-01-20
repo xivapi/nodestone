@@ -3,7 +3,7 @@ import {CssSelectorDefinition, CssSelectorRegistry} from "./css-selector-registr
 // @ts-ignore
 import * as RegexTranslator from 'regex-translator';
 import {parseHTML} from 'linkedom';
-import {snakeCase} from 'lodash';
+import {isNaN, snakeCase} from 'lodash';
 
 const axios = require('axios').default;
 
@@ -135,10 +135,15 @@ export abstract class PageParser {
                 .replace(/\\f\\n\\r\\t\\v/gm, '\\s\\f\\n\\r\\t\\v&nbsp;');
             const match = new RegExp(regex).exec(res);
             if (match) {
-                return Object.entries<any>(match.groups as Record<string, any>).reduce((acc, [key, value]) => ({
-                    ...acc,
-                    [key]: isNaN(value) ? value : +value
-                }), {}) || null;
+                return Object.entries<any>(match.groups as Record<string, any>).reduce((acc, [key, value]) => {
+                    if (!isNaN(value) && (+value).toString() === value) {
+                        value = +value;
+                    }
+                    return {
+                        ...acc,
+                        [key]: value
+                    };
+                }, {}) || null;
             }
             return null;
         }
