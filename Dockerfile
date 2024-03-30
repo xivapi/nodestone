@@ -1,16 +1,26 @@
 # Use the official Node.js 20 image.
-# https://hub.docker.com/_/node
 FROM node:20
+
 # Create and change to the app directory.
 WORKDIR /usr/src/app
+
 # Copy application dependency manifests to the container image.
-# A wildcard is used to ensure both package.json AND yarn.lock are copied.
-# Copying this separately prevents re-running npm install on every code change.
-COPY package.json ./
-COPY yarn.lock ./
+COPY package.json yarn.lock ./
+
 # Install production dependencies.
-RUN yarn
+RUN yarn install --production
+
 # Copy local code to the container image.
 COPY . .
+
+# Change ownership of the app directory to the node non-root user.
+RUN chown -R node:node /usr/src/app
+
+# Switch to node non-root user.
+USER node
+
+# Expose the port the app runs on.
+EXPOSE 8080
+
 # Run the web service on container startup.
 CMD [ "yarn", "run", "express:start" ]
