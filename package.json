@@ -18,6 +18,8 @@
     "express": "^4.19.2",
     "linkedom": "^0.16.11",
     "lodash": "^4.17.21",
+    "pino": "^8.19.0",
+    "pino-http": "^9.0.0",
     "regex-translator": "^0.2.8",
     "typescript": "^5.4.3"
   },

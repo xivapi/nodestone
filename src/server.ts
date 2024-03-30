@@ -1,4 +1,6 @@
 import express from "express";
+import logger from './logger/logger';
+import pinoHttp from 'pino-http';
 import { Character } from "./profile/character";
 import { Achievements } from "./profile/achievements";
 import { ClassJob } from "./profile/classjob";
@@ -8,6 +10,9 @@ import { CharacterSearch } from "./search/character-search";
 import { FreeCompanySearch } from "./search/freecompany-search";
 
 const app = express();
+
+const httpLogger = pinoHttp({ logger });
+app.use(httpLogger);
 
 const characterParser = new Character();
 const achievementsParser = new Achievements();
@@ -113,6 +118,6 @@ app.get("/FreeCompany/:fcId", async (req, res) => {
 
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`);
+  logger.info(`Listening at http://localhost:${port}`);
 });
 server.on("error", console.error);
