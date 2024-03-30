@@ -4,6 +4,9 @@
   "main": "lib/index.js",
   "license": "MIT",
   "typings": "types/index.d.ts",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "express:start": "rimraf dist && tsc -p tsconfig.json && node dist/lib/server.js",
     "copyfiles": "copyfiles package.json readme.md dist",
