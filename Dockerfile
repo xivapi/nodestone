@@ -1,5 +1,8 @@
-# Use the official Node.js 20 image.
-FROM node:20
+# Use the alpine Node.js 20 image.
+FROM node:20-alpine
+
+# Install and use yarn 4.x
+RUN corepack enable && corepack prepare yarn@4.1.1
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -7,8 +10,8 @@ WORKDIR /usr/src/app
 # Copy application dependency manifests to the container image.
 COPY package.json yarn.lock ./
 
-# Install production dependencies.
-RUN yarn install --production
+# Install dependencies.
+RUN yarn install --immutable
 
 # Copy local code to the container image.
 COPY . .
