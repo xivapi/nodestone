@@ -6,14 +6,21 @@ Easy to use Node Lodestone parser.
 
 ### Inside your own server
 
+#### Running on Host
 ```shell
-yarn
+yarn install
 yarn run express:start
+```
+
+#### Running on Docker Container
+```shell
+docker build -t nodestone .
+docker run -p 8080:8080 nodestone
 ```
 
 The server will then listen on port 8080 by default.
 
-### Inside Cloud Run
+### Inside Google Cloud Run
 
 ```shell
 gcloud builds submit --tag gcr.io/<your image name> && gcloud beta run deploy --image gcr.io/<your image name>
@@ -29,5 +36,3 @@ yarn add @xivapi/nodestone
 const character = await this.characterParser.parse({ params: { characterId: id } } as any);
 console.log(character);
 ```
-
-The Node.JS API will be changed later on so you don't have to provide this mock request.

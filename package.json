@@ -9,7 +9,7 @@
   },
   "scripts": {
     "express:start": "rimraf dist && tsc -p tsconfig.json && node dist/lib/server.js",
-    "copyfiles": "copyfiles package.json readme.md dist",
+    "copyfiles": "copyfiles package.json README.md dist",
     "release": "rimraf dist && tsc -p tsconfig.json && yarn run copyfiles && npm publish ./dist"
   },
   "dependencies": {
