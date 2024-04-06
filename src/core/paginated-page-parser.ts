@@ -8,7 +8,7 @@ export abstract class PaginatedPageParser extends PageParser {
     protected getURL(req: Request): string {
         let query = '';
         if (req.query && req.query.page) {
-            query = `?page=${req.query?.page}`;
+            query = `&page=${req.query?.page}`;
         }
         return `${this.getBaseURL(req)}${query}`;
     }
