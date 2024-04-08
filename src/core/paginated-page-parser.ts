@@ -6,11 +6,11 @@ export abstract class PaginatedPageParser extends PageParser {
     protected abstract getBaseURL(req: Request): string;
 
     protected getURL(req: Request): string {
-        let query = '';
+        const url = new URL(this.getBaseURL(req));
         if (req.query && req.query.page) {
-            query = `?page=${req.query?.page}`;
+            url.searchParams.set('page', req.query.page.toString());
         }
-        return `${this.getBaseURL(req)}${query}`;
+        return url.toString();
     }
 
     async parse(req: Request, columnsPrefix: string = ''): Promise<Object> {

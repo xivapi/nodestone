@@ -2,10 +2,11 @@ import { PaginatedPageParser } from "../core/paginated-page-parser";
 import { CssSelectorRegistry } from "../core/css-selector-registry";
 import * as characterSearch from "../lib/lodestone-css-selectors/search/character.json";
 import { Request } from "express";
+import logger from "../logger/logger";
 
 export class CharacterSearch extends PaginatedPageParser {
   protected getBaseURL(req: Request): string {
-      console.log(req.query);
+    logger.info(req.query);
     let query = `?q=${req.query.name}`;
     if (req.query.dc) {
       query += `&worldname=_dc_${req.query.dc}`;
