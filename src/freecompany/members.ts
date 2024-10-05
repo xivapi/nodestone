@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { CssSelectorRegistry } from "../core/css-selector-registry";
-import * as members from "../lib/lodestone-css-selectors/freecompany/members.json";
+import * as members from "lodestone-css-selectors/freecompany/members.json";
 import { PaginatedPageParser } from "../core/paginated-page-parser";
 
 export class FCMembers extends PaginatedPageParser {

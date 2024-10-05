@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { CssSelectorRegistry } from "../core/css-selector-registry";
-import * as classjob from "../lib/lodestone-css-selectors/profile/classjob.json";
+import * as classjob from "lodestone-css-selectors/profile/classjob.json";
 import { PaginatedPageParser } from "../core/paginated-page-parser";
 
 export class ClassJob extends PaginatedPageParser {

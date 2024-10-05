@@ -1,6 +1,6 @@
 import { PaginatedPageParser } from "../core/paginated-page-parser";
 import { CssSelectorRegistry } from "../core/css-selector-registry";
-import * as characterSearch from "../lib/lodestone-css-selectors/search/character.json";
+import * as characterSearch from "lodestone-css-selectors/search/character.json";
 import { Request } from "express";
 import logger from "../logger/logger";
 

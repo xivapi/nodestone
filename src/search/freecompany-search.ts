@@ -1,6 +1,6 @@
 import { PaginatedPageParser } from "../core/paginated-page-parser";
 import { CssSelectorRegistry } from "../core/css-selector-registry";
-import * as freeCompanySearch from "../lib/lodestone-css-selectors/search/freecompany.json";
+import * as freeCompanySearch from "lodestone-css-selectors/search/freecompany.json";
 import { Request } from "express";
 import logger from "../logger/logger";
 

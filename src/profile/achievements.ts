@@ -1,6 +1,6 @@
 import {Request} from "express";
 import {CssSelectorRegistry} from "../core/css-selector-registry";
-import * as achievements from '../lib/lodestone-css-selectors/profile/achievements.json';
+import * as achievements from 'lodestone-css-selectors/profile/achievements.json';
 import {PaginatedPageParser} from "../core/paginated-page-parser";
 
 export class Achievements extends PaginatedPageParser {
