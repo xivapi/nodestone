@@ -7,8 +7,16 @@ Easy to use Node Lodestone parser.
 ### Inside your own server
 
 #### Running on Host
+
+Gather dependencies
+
 ```shell
+yarn add xivapi/lodestone-css-selectors
 yarn install
+```
+
+Then start
+```
 yarn run express:start
 ```
 

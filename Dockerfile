@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 
 # Install dependencies.
-RUN yarn install
+RUN apk --no-cache add git && yarn add xivapi/lodestone-css-selectors && yarn install
 
 # Copy local code to the container image.
 COPY . .

@@ -1,6 +1,6 @@
 import { Request } from "express";
-import { CssSelectorRegistry } from "../core/css-selector-registry";
-import * as members from "../lib/lodestone-css-selectors/freecompany/members.json";
+import { CssSelectorRegistry, PAGE_REGION } from "../core/css-selector-registry";
+import * as members from "lodestone-css-selectors/freecompany/members.json";
 import { PaginatedPageParser } from "../core/paginated-page-parser";
 
 export class FCMembers extends PaginatedPageParser {
@@ -10,7 +10,7 @@ export class FCMembers extends PaginatedPageParser {
 
   protected getBaseURL(req: Request): string {
     return (
-      "https://na.finalfantasyxiv.com/lodestone/freecompany/" +
+      "https://"+ PAGE_REGION + ".finalfantasyxiv.com/lodestone/freecompany/" +
       req.params.fcId +
       "/member"
     );
