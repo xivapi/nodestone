@@ -12,6 +12,8 @@ export class CharacterSearch extends PaginatedPageParser {
       query += `&worldname=_dc_${req.query.dc}`;
     } else if (req.query.server) {
       query += `&worldname=${req.query.server}`;
+    } else {
+      query += '&worldname=';
     }
     return `https://na.finalfantasyxiv.com/lodestone/character/${query}`;
   }
