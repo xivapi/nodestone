@@ -1,6 +1,6 @@
 import {Request} from "express";
-import {CssSelectorRegistry} from "../core/css-selector-registry";
-import * as achievements from '../lib/lodestone-css-selectors/profile/achievements.json';
+import {CssSelectorRegistry, PAGE_REGION} from "../core/css-selector-registry";
+import * as achievements from 'lodestone-css-selectors/profile/achievements.json';
 import {PaginatedPageParser} from "../core/paginated-page-parser";
 
 export class Achievements extends PaginatedPageParser {
@@ -9,7 +9,7 @@ export class Achievements extends PaginatedPageParser {
     }
 
     protected getBaseURL(req: Request): string {
-        return "https://na.finalfantasyxiv.com/lodestone/character/" + req.params.characterId + "/achievement";
+        return "https://"+ PAGE_REGION + ".finalfantasyxiv.com/lodestone/character/" + req.params.characterId + "/achievement";
     }
 
     async parse(req: Request, columnsPrefix: string = ''): Promise<Object> {

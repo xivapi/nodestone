@@ -1,6 +1,6 @@
 import { Request } from "express";
-import { CssSelectorRegistry } from "../core/css-selector-registry";
-import * as classjob from "../lib/lodestone-css-selectors/profile/classjob.json";
+import { CssSelectorRegistry, PAGE_REGION } from "../core/css-selector-registry";
+import * as classjob from "lodestone-css-selectors/profile/classjob.json";
 import { PaginatedPageParser } from "../core/paginated-page-parser";
 
 export class ClassJob extends PaginatedPageParser {
@@ -10,7 +10,7 @@ export class ClassJob extends PaginatedPageParser {
 
   protected getBaseURL(req: Request): string {
     return (
-      "https://na.finalfantasyxiv.com/lodestone/character/" +
+      "https://"+ PAGE_REGION + ".finalfantasyxiv.com/lodestone/character/" +
       req.params.characterId +
       "/class_job"
     );
