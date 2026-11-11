@@ -1,16 +1,10 @@
 import * as z from "zod/v4";
-import { Logical, Physical, type World } from "../models";
+import { Physical } from "../models";
 
 // /crossworld_linkshell
 const params = z.object({
   q: z.string(),
-  worldname: z
-    .union([
-      z.enum(Physical),
-      z.enum(Logical),
-      z.string<World | `${Physical}` | `${Logical}`>(),
-    ])
-    .optional(),
+  dcname: z.enum(Physical).optional(),
   classjob: z
     .union([
       z.templateLiteral([
@@ -57,7 +51,7 @@ const entries = z.object({
           }),
         name: z.string().meta({ selector: "div > h4" }),
         server: z.object({
-          dc: z.string().meta({ selector: "li:first-of-type" }),
+          region: z.string().meta({ selector: "li:first-of-type" }),
         }),
         members: z.coerce.number().meta({ selector: "li:last-of-type > span" }),
       })
@@ -69,7 +63,7 @@ const entries = z.object({
 const profile = z.object({
   name: z.string().meta({ selector: "p.frame__cwls__name" }),
   server: z.object({
-    dc: z.string().meta({ selector: "span.frame__cwls__world" }),
+    region: z.string().meta({ selector: "span.frame__cwls__world" }),
   }),
   formed_at: z
     .string()

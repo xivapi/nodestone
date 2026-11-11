@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Nodestone } from "../../src";
+import { Nodestone, Physical } from "../../src";
 
 describe("/crossworld_linkshell", () => {
   const client = new Nodestone();
@@ -8,7 +8,7 @@ describe("/crossworld_linkshell", () => {
     it("successfully performs a paginated search for linkshells", async () => {
       const stream = client.cwls.search({
         q: "",
-        worldname: "_region_2",
+        dcname: Physical.Japan,
         order: 2, // old to new
       });
 
