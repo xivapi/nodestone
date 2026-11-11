@@ -1,0 +1,31 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# build output
+dist/
+out/
+coverage/
+
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# macOS-specific files
+.DS_Store
+
+# package locks
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lock
+deno.lock
+
+# misc
+.env*
+*.pem

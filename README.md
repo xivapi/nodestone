@@ -1,46 +1,52 @@
-# Nodestone
+# @xivapi/nodestone
 
-Easy to use Node Lodestone parser.
+[![npm version](https://badge.fury.io/js/@xivapi%2Fnodestone.svg)](https://badge.fury.io/js/@xivapi%2Fnodestone)
+![NPM License](https://img.shields.io/npm/l/%40xivapi%2Fnodestone)
 
-## How to use
+A JavaScript/TypeScript client for interacting with [The Lodestone], providing access to all endpoints through a consistent, Zod-driven schemas. Designed for server-side and edge runtimes in mind.
 
-### Inside your own server
+If you need help or run into any issues, please [open an issue](https://github.com/xivapi/nodestone/issues) on GitHub or join the [Discord] for support.
 
-#### Running on Host
+## Installation
 
-Gather dependencies
-
-```shell
-yarn add xivapi/lodestone-css-selectors
-yarn install
+```bash
+npm install @xivapi/nodestone # or pnpm/yarn/bun/deno
 ```
 
-Then start
-```
-yarn run express:start
-```
+## Examples
 
-#### Running on Docker Container
-```shell
-docker build -t nodestone .
-docker run -p 8080:8080 nodestone
-```
+```ts
+import { Nodestone } from "@xivapi/nodestone";
 
-The server will then listen on port 8080 by default.
+const client = new Nodestone();
+const char = await client.character.get(12345678);
 
-### Inside Google Cloud Run
+console.log(char.name); // string
+console.log(await char.mounts()); // object[]
 
-```shell
-gcloud builds submit --tag gcr.io/<your image name> && gcloud beta run deploy --image gcr.io/<your image name>
-```
+const params = { q: "John Finalfantasyxiv" };
+const entries = await client.character.search(params);
 
-### Inside your Node.JS project
-
-```shell
-yarn add @xivapi/nodestone
+console.log(entries.all()); // []
+console.log(entries.get(1)); // {}
 ```
 
-```js
-const character = await this.characterParser.parse({ params: { characterId: id } } as any);
-console.log(character);
-```
+<!-- Not sure to keep or not! -->
+<!-- Check out [our examples directory](/examples) for ready-to-use snippets covering **Hono**, **Express**, **Fastify**, **Node.js**, **Deno**, and **Bun**. -->
+
+## Attribution
+
+All _Final Fantasy XIV_ assets, including data accessed via the [The Lodestone][The Lodestone], are the intellectual property of &copy; [SQUARE ENIX CO., LTD.](https://www.square-enix.com/). This project is not affiliated with or endorsed by Square Enix.
+
+## Contributing
+
+Thanks for your interest in contributing! We welcome contributions of all kinds, including bug fixes, new features, documentation improvements, and translations.
+
+For details on getting started, coding standards, and submitting PRs, please refer to our [Contributor Manual](/CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the MIT License. See [`LICENSE`](/packages/nodestone/LICENSE) for details.
+
+[The Lodestone]: https://na.finalfantasyxiv.com/lodestone/
+[Discord]: https://discord.gg/MFFVHWC
